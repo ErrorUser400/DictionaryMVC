@@ -1,0 +1,161 @@
+﻿@using DictionaryWebApp.Models
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+}
+
+@{
+    var searchedWord = ViewBag.SearchedWord;
+    var inDictionary = ViewBag.InDictionary;
+}
+
+<div class="text-center">
+    <h1 class="display-4 text-danger" style="font-weight: bold;">Dictionary</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="text-center justify-content-center mb-4 d-flex">
+    <span class="me-2" style="font-weight: bold;">Enter Word Here:</span>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <input type="text" name="userword" />
+        <button type="submit">Submit</button>
+    }
+</div>
+
+@{
+    @if (inDictionary == false)
+    {
+        <div class="text-center">Please try to enter a valid word</div>
+    }
+
+    <div class="text-center justify-content-center">
+        @if (searchedWord is not null && inDictionary == true)
+        {
+            foreach (var Word in searchedWord)
+            {
+                <h4><strong><u>Word: @Word.word</u></strong></h4>
+                <div>
+                    <details class="text-center">
+                        <summary>Phonetics</summary>
+                        <div>
+                            @foreach (var phonetic in Word.phonetics)
+                            {
+                                if (phonetic.audio != "" || phonetic.sourceUrl != "" || phonetic.license != null)
+                                {
+                                    <div>
+                                        @if (phonetic.text != "")
+                                        {
+                                            <div>Text: @phonetic.text</div>
+                                        }
+
+                                        @if (phonetic.audio != "")
+                                        {
+                                            <audio controls>
+                                                <source src="@phonetic.audio" type="audio/mp3" />
+                                            </audio>
+                                        }
+                                        @if (phonetic.sourceUrl != "")
+                                        {
+                                            <div>
+                                                Source:
+                                                <a href="@phonetic.sourceUrl">
+                                                    @phonetic.sourceUrl
+                                                </a>
+                                            </div>
+                                        }
+                                        @if (phonetic.license != null)
+                                        {
+                                            <div>
+                                                License: @phonetic.license.name;
+                                            </div>
+                                            <div>
+                                                Url: <a href="@phonetic.license.url">@phonetic.license.url</a>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </details>
+                </div>
+                <div>
+                    Meanings:
+                    @foreach (var meaning in Word.meanings)
+                    {
+                        if (meaning.partOfSpeech != "")
+                        {
+                            <div>Part of Speech: @meaning.partOfSpeech</div>
+                        }
+                        <div>
+                            <details>
+                                <summary>Definitions</summary>
+                                @if (meaning.definitions != null)
+                                {
+                                    foreach (var WordDefinition in meaning.definitions)
+                                    {
+                                        <div>
+                                            <div>Definition: @WordDefinition.definition</div>
+                                            @if (WordDefinition.synonyms != null && WordDefinition.synonyms.Length >= 1)
+                                            {
+                                                <div>
+                                                    Synonyms:
+                                                    @foreach (var defsynonyms in WordDefinition.synonyms)
+                                                    {
+                                                        <span>"@defsynonyms", </span>
+                                                    }
+                                                </div>
+                                            }
+                                            @if (WordDefinition.antonyms != null && WordDefinition.antonyms.Length >= 1)
+                                            {
+                                                <div>
+                                                    Antonyms:
+                                                    @foreach (var defantonyms in WordDefinition.antonyms)
+                                                    {
+                                                        <spans>"@defantonyms",</spans>
+                                                    }
+                                                </div>
+                                            }
+                                            @if (WordDefinition.example != "")
+                                            {
+                                                <div>Example: @WordDefinition.example</div>
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </details>
+                        </div>
+                        @if (meaning.synonyms != null && meaning.synonyms.Length >= 1)
+                        {
+                            <div>
+                                Synonyms:
+                                @foreach (var items in meaning.synonyms)
+                                {
+                                    <span>"@items",</span>
+                                }
+                            </div>
+                        }
+                        @if (meaning.antonyms != null && meaning.antonyms.Length >= 1)
+                        {
+                            <div>
+                                Antonyms:
+                                @foreach (var items in meaning.antonyms)
+                                {
+                                    <span>"@items",</span>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+                <div>License: @Word.license.name | <a href="@Word.license.url">@Word.license.url</a></div>
+                <div>
+                    Source Url: @if (Word.sourceUrls[0] != null)
+                    {
+                        <a href="@Word.sourceUrls[0]">@Word.sourceUrls[0]</a>
+                    }
+                </div>
+            }
+        }
+    </div>
+}

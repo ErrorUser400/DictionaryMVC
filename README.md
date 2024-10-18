@@ -5,3 +5,4 @@ I'm not too crazy with css or styling, so it looks pretty bland and boring, but 
 Please support the dev that made the API\
 API: https://dictionaryapi.dev/ \
 DEV: https://github.com/meetDeveloper/freeDictionaryAPI
+![alt text](https://github.com/ErrorUser400/DictionaryMVC/main/Screenshot (1).png?raw=true)
